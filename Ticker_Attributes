@@ -1,0 +1,62 @@
+import re
+import requests
+from bs4 import BeautifulSoup
+
+#URLs
+#CL
+#url = 'https://www.investing.com/commodities/crude-oil-historical-data'
+#LCO
+#url = 'https://www.investing.com/commodities/brent-oil-historical-data'
+#GC
+#url = 'https://www.investing.com/commodities/gold-historical-data'
+#HG
+#url = 'https://www.investing.com/commodities/copper-historical-data'
+#ZC
+#url ='https://www.investing.com/commodities/us-corn-historical-data'
+#ZW
+url='https://www.investing.com/commodities/us-wheat-historical-data'
+
+
+
+
+
+#Open URL 
+r = requests.get(url, headers={'User-Agent': 'Mozilla/5.0'})
+
+#Determine Format
+soup = BeautifulSoup(r.content, "html.parser")
+
+#Title
+title = soup.title.text
+#print(title)
+
+#pairId
+pattern = re.compile(r"pairId: (\d+)")
+script = soup.find('script', text=pattern)
+
+match = pattern.search(script.text)
+
+if match:
+    pairId = match.group(1)
+    #print(match.group(1))
+
+#smlId
+pattern = re.compile(r"smlId: (\d+)")
+script = soup.find('script', text=pattern)
+
+
+match = pattern.search(script.text)
+
+if match:
+    smlId = match.group(1)
+    #print(match.group(1))
+    
+#Type investing.com Name
+
+print("={'name' : 'ZW',") 
+print("'curr_id' : "+pairId+",")
+print("'smlId' : "+smlId+",")
+print("'header' : '"+title+"',")
+print("'sort_col' : 'date',")
+print("'action' : 'historical_data'")
+print("}")
